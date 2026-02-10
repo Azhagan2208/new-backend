@@ -1,14 +1,17 @@
 import sys
 import os
 
-# Add the current directory to the sys.path
-path = os.path.dirname(os.path.abspath(__file__))
-if path not in sys.path:
-    sys.path.insert(0, path)
+# Add current directory to path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+# Debug: Print path to see if app folder is visible
+print(f"Current Path: {sys.path}")
+print(f"Directory Contents: {os.listdir(BASE_DIR)}")
 
 try:
     from app.main import app
-except ImportError as e:
-    print(f"FAILED TO IMPORT APP: {e}")
-    # This will help debugging on Vercel logs
+except Exception as e:
+    print(f"Import Error Details: {e}")
     raise e
