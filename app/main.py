@@ -9,10 +9,18 @@ from app.routers.rooms import router as room
 from app.routers.questions import router as question
 from app.routers.votes import router as vote
 
-# creating the database tables
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Questup Backend")
+
+
+@app.on_event("startup")
+def on_startup():
+    # creating the database tables only when app starts
+    try:
+        if "dummy" not in str(engine.url):
+            Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"Table creation failed: {e}")
+
 
 app.add_middleware(
     CORSMiddleware,

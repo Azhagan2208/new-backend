@@ -8,8 +8,11 @@ load_dotenv()
 # Database Connection
 DATABASE_URL = os.getenv("DB_URL")
 
+# If no DB_URL, we don't crash here so the server can at least start
 if not DATABASE_URL:
-    raise ValueError("No DATABASE_URL found in environment variables. Please check your .env file.")
+    print("WARNING: No DB_URL found. Database features will fail.")
+    # Assigning a dummy URL just to prevent engine creation crash if accessed
+    DATABASE_URL = "postgresql://user:pass@localhost/dummy"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
