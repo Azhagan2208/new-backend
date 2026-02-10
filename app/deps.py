@@ -1,12 +1,13 @@
 from fastapi import Header, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from .database import SessionLocal
-from . import models, security
+from app.database import SessionLocal
+from app import models, security
 from jose import JWTError, jwt
 from typing import Optional, Generator
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 def get_db() -> Generator:
     """Dependency to get a database session."""
@@ -15,6 +16,7 @@ def get_db() -> Generator:
         yield db
     finally:
         db.close()
+
 
 def get_current_teacher(
     token: str = Depends(oauth2_scheme),
@@ -40,4 +42,3 @@ def get_current_teacher(
     if teacher is None:
         raise credentials_exception
     return teacher
-
