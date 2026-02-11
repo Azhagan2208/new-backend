@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+import traceback
 
 from app.database import Base, engine
 from app.routers.auth import router as auth
@@ -9,18 +11,18 @@ from app.routers.votes import router as vote
 
 app = FastAPI(title="Questup Backend")
 
-# Create tables only when app starts (safe way)
-    # @app.on_event("startup")
-    # def on_startup():
-    #     Base.metadata.create_all(bind=engine)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://127.0.0.1:5501",
+        "http://localhost:5501",
+        "https://questup-frontend.vercel.app"  # future frontend domain
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(auth)
 app.include_router(room)
