@@ -10,9 +10,9 @@ from app.routers.votes import router as vote
 app = FastAPI(title="Questup Backend")
 
 # Create tables only when app starts (safe way)
-@app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)
+    # @app.on_event("startup")
+    # def on_startup():
+    #     Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
