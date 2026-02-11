@@ -1,12 +1,12 @@
 from fastapi import Header, HTTPException, Depends, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app import models, security
 from jose import JWTError, jwt
 from typing import Optional, Generator
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+security_scheme = HTTPBearer()
 
 
 def get_db() -> Generator:
@@ -19,10 +19,11 @@ def get_db() -> Generator:
 
 
 def get_current_teacher(
-    token: str = Depends(oauth2_scheme),
+    auth: HTTPAuthorizationCredentials = Depends(security_scheme),
     db: Session = Depends(get_db),
 ) -> models.Teacher:
     """Dependency to get the currently authenticated teacher from the JWT token."""
+    token = auth.credentials
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
