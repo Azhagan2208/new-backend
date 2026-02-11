@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from app import models, schemas
-from app.deps import get_db, get_current_teacher
+from .. import models, schemas
+from ..deps import get_db, get_current_teacher
 
 router = APIRouter(tags=["Questions"])
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app import models, schemas
-from app.deps import get_db
+from .. import models, schemas
+from ..deps import get_db
 
 router = APIRouter(tags=["Votes"])
 
