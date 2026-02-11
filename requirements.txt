@@ -8,3 +8,5 @@ email-validator
 pydantic
 uvicorn
 python-jose[cryptography]
+
+
