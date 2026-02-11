@@ -16,7 +16,7 @@ app.add_middleware(
     allow_origins=[
         "http://127.0.0.1:5501",
         "http://localhost:5501",
-        "https://questup-frontend.vercel.app"  # future frontend domain
+        "https://questup25.netlify.app"  # future frontend domain
     ],
     allow_credentials=True,
     allow_methods=["*"],
