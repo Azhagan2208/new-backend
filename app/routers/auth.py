@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
-from .. import models, schemas, security
-from ..deps import get_db
+from app import models, schemas, security
+from app.deps import get_db
 from datetime import timedelta
 from typing import Optional
 

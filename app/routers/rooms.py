@@ -5,8 +5,8 @@ import random
 import string
 from typing import List
 
-from .. import models, schemas
-from ..deps import get_db, get_current_teacher
+from app import models, schemas
+from app.deps import get_db, get_current_teacher
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])
 

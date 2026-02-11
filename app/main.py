@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import Base, engine
+from app.database import Base, engine
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from .routers.auth import router as auth
+from app.routers.auth import router as auth
 
-from .routers.rooms import router as room
-from .routers.questions import router as question
-from .routers.votes import router as vote
+from app.routers.rooms import router as room
+from app.routers.questions import router as question
+from app.routers.votes import router as vote
 
 # creating the database tables
 Base.metadata.create_all(bind=engine)
