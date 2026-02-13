@@ -40,6 +40,8 @@ class RoomOut(BaseModel):
     owner_id: int
     is_open: bool
     created_at: datetime
+    question_count: int = 0
+    participant_count: int = 0
 
     class Config:
         from_attributes = True
@@ -48,6 +50,24 @@ class RoomOut(BaseModel):
 class RoomResponse(BaseModel):
     success: bool
     room: RoomOut
+
+
+class RoomListItem(BaseModel):
+    id: int
+    title: str
+    room_code: str
+    is_open: bool
+    created_at: datetime
+    question_count: int
+    participant_count: int
+
+    class Config:
+        from_attributes = True
+
+
+class RoomListResponse(BaseModel):
+    success: bool
+    rooms: List[RoomListItem]
 
 
 # --- Question Schemas ---

@@ -9,5 +9,6 @@ pydantic
 uvicorn
 python-jose[cryptography]
 python-dotenv
+fpdf2
 
 

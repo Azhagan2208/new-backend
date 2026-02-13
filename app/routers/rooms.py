@@ -41,6 +41,47 @@ def create_room(
     return {"success": True, "room": room}
 
 
+@router.get("/my-rooms", response_model=schemas.RoomListResponse)
+def list_my_rooms(
+    db: Session = Depends(get_db),
+    teacher: models.Teacher = Depends(get_current_teacher),
+):
+    """List all rooms created by the current teacher with counts."""
+    rooms = db.query(models.Room).filter(models.Room.owner_id == teacher.id).all()
+
+    results = []
+    for room in rooms:
+        # Count total questions
+        question_count = (
+            db.query(models.Question).filter(models.Question.room_id == room.id).count()
+        )
+
+        # Count unique students (participants)
+        participant_count = (
+            db.query(models.Question.student_name)
+            .filter(models.Question.room_id == room.id)
+            .distinct()
+            .count()
+        )
+
+        results.append(
+            {
+                "id": room.id,
+                "title": room.title,
+                "room_code": room.room_code,
+                "is_open": room.is_open,
+                "created_at": room.created_at,
+                "question_count": question_count,
+                "participant_count": participant_count,
+            }
+        )
+
+    # Sort rooms by created_at descending
+    results.sort(key=lambda x: x["created_at"], reverse=True)
+
+    return {"success": True, "rooms": results}
+
+
 @router.get("/{room_id}", response_model=schemas.RoomOut)
 def get_room(
     room_id: int,
@@ -57,7 +98,29 @@ def get_room(
     if not room:
         raise HTTPException(status_code=404, detail="Room not found")
 
-    return room
+    # Count total questions
+    question_count = (
+        db.query(models.Question).filter(models.Question.room_id == room.id).count()
+    )
+
+    # Count unique students (participants)
+    participant_count = (
+        db.query(models.Question.student_name)
+        .filter(models.Question.room_id == room.id)
+        .distinct()
+        .count()
+    )
+
+    return {
+        "id": room.id,
+        "title": room.title,
+        "room_code": room.room_code,
+        "owner_id": room.owner_id,
+        "is_open": room.is_open,
+        "created_at": room.created_at,
+        "question_count": question_count,
+        "participant_count": participant_count,
+    }
 
 
 @router.post("/join", response_model=schemas.RoomResponse)
@@ -77,3 +140,24 @@ def join_by_code(payload: dict, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Room not found or closed")
 
     return {"success": True, "room": room}
+
+
+@router.post("/{room_id}/close")
+def close_room(
+    room_id: int,
+    db: Session = Depends(get_db),
+    teacher: models.Teacher = Depends(get_current_teacher),
+):
+    """Close a room so no more questions can be posted."""
+    room = (
+        db.query(models.Room)
+        .filter(models.Room.id == room_id, models.Room.owner_id == teacher.id)
+        .first()
+    )
+
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+
+    room.is_open = False
+    db.commit()
+    return {"success": True, "message": "Room closed successfully"}
